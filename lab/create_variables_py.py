@@ -15,11 +15,14 @@ variables = re.search(
     text
 )[0]
 
-out = 'import sympy as sp\n\n\n'
-
+out = "import sympy as sp\n"
+out += "from sympy.physics.mechanics import dynamicsymbols\n\n"
+out += "rs = lambda name: sp.symbols(name, real=True)\n\n"
+out += "drs = lambda name: dynamicsymbols(name, real=True)\n\n"
+out += "t = sp.symbols('t')\n\n"
 constant_out = re.sub(
     r"^(?P<var>.*?) (?P<desc>[^0-9\n\r]*(?P<val>[0-9]+\.[0-9]*)?.*)$",
-    r"\g<var> = sp.symbols('\g<var>')  # \g<desc>",
+    r"\g<var> = rs('\g<var>')  # \g<desc>",
     constants,
     flags=re.MULTILINE)
 
@@ -38,7 +41,7 @@ out += conts_dict_string + '\n\n\n'
 
 vars_out = re.sub(
     r"^(?P<var>.*?(?:, .*?)*) (?P<desc>.*)$",
-    r"\g<var> = sp.symbols('\g<var>')  # \g<desc>",
+    r"\g<var> = drs('\g<var>')  # \g<desc>",
     variables,
     flags=re.MULTILINE)
 
