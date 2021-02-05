@@ -1,0 +1,26 @@
+l_a Distance from elevation axis to helicopter body 0.63 m
+l_h Distance from pitch axis to motor 0.18 m
+K_f Force constant motor 0.25 N/V
+J_e Moment of inertia for elevation 0.83 kg m2
+J_t Moment of inertia for travel 0.83 kg m2
+J_p Moment of inertia for pitch 0.034 kg m2
+m_h Mass of helicopter 1.05 kg
+m_w Balance weight 1.87 kg
+m_g Effective mass of the helicopter 0.05 kg
+K_p Force to lift the helicopter from the ground 0.49 N
+
+Table 2: Variables.
+Symbol Variable
+p Pitch
+p_c Setpoint for pitch
+λ Travel
+r Speed of travel
+r_c Setpoint for speed of travel
+e Elevation
+e_c Setpoint for elevation
+V_f Voltage, motor in front
+V_b Voltage, motor in back
+V_d Voltage difference, Vf − Vb
+V_s Voltage sum, Vf + Vb
+K_p_p, K_p_d, K_e_p, K_e_i, K_e_d Controller gains
+T_g Moment needed to keep the helicopter flying
