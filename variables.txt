@@ -1,3 +1,4 @@
+constants
 l_a Distance from elevation axis to helicopter body 0.63 m
 l_h Distance from pitch axis to motor 0.18 m
 K_f Force constant motor 0.25 N/V
@@ -9,11 +10,11 @@ m_w Balance weight 1.87 kg
 m_g Effective mass of the helicopter 0.05 kg
 K_p Force to lift the helicopter from the ground 0.49 N
 
-Table 2: Variables.
-Symbol Variable
+
+variables
 p Pitch
 p_c Setpoint for pitch
-λ Travel
+lamb Travel
 r Speed of travel
 r_c Setpoint for speed of travel
 e Elevation

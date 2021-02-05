@@ -1,36 +1,49 @@
 import sympy as sp
 from sympy import symbols as sbs
+import re
 
-l_a, l_h = sbs('l_a, l_h')  # dist elev axis to heli,
-K_f = sbs('K_f')
-J_e, J_t, J_p = sbs('J_e, J_t, J_p')
-m_n, m_w, m_g = sbs('m_n, m_w, m_g')
+with open('variables.txt', 'r') as file:
+    text = file.read()
 
+constants = re.search(
+    r"(?<=constants\n)[\s\S]*?(?=\n{3,})",
+    text
+)[0]
 
-lamb = sbs('lambda')
+variables = re.search(
+    r"(?<=variables\n)[\s\S]*?(?=\n{3,}|$)",
+    text
+)[0]
 
-# la Distance from elevation axis to helicopter body 0.63 m
-# lh Distance from pitch axis to motor 0.18 m
-# Kf Force constant motor 0.25 N/V
-# Je Moment of inertia for elevation 0.83 kg m2
-# Jt Moment of inertia for travel 0.83 kg m2
-# Jp Moment of inertia for pitch 0.034 kg m2
-# mh Mass of helicopter 1.05 kg
-# mw Balance weight 1.87 kg
-# mg Effective mass of the helicopter 0.05 kg
-# Kp Force to lift the helicopter from the ground 0.49 N
-# Table 2: Variables.
-# Symbol Variable
-# p Pitch
-# pc Setpoint for pitch
-# λ Travel
-# r Speed of travel
-# rc Setpoint for speed of travel
-# e Elevation
-# ec Setpoint for elevation
-# Vf Voltage, motor in front
-# Vb Voltage, motor in back
-# Vd Voltage difference, Vf − Vb
-# Vs Voltage sum, Vf + Vb
-# Kpp, Kpd, Kep, Kei, Ked Controller gains
-# Tg Moment needed to keep the helicopter flying
+out = 'import sympy as sp\n\n\n'
+
+constant_out = re.sub(
+    r"^(?P<var>.*?) (?P<desc>[^0-9\n\r]*(?P<val>[0-9]+\.[0-9]*)?.*)$",
+    r"\g<var> = sp.symbols('\g<var>')  # \g<desc>",
+    constants,
+    flags=re.MULTILINE)
+
+out += constant_out + '\n\n'
+
+matches = re.finditer(
+    r"^(?P<var>.*?) [^0-9]*(?P<val>[0-9]+\.[0-9]*)",
+    constants,
+    flags=re.MULTILINE
+)
+conts_dict_string = 'const_dict = dict('
+conts_dict_string += ', '.join([f'{m[1]}={m[2]}' for m in matches])
+conts_dict_string += ')\n\n'
+
+out += conts_dict_string + '\n\n\n'
+
+vars_out = re.sub(
+    r"^(?P<var>.*?(?:, .*?)*) (?P<desc>.*)$",
+    r"\g<var> = sp.symbols('\g<var>')  # \g<desc>",
+    variables,
+    flags=re.MULTILINE)
+
+out += vars_out
+print(out)
+with open('variables.py', 'w') as file:
+    file.write(out)
+#
