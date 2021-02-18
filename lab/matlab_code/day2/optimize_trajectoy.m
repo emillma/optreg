@@ -1,6 +1,6 @@
 
 N = 100;
-q = 0.1;
+q = 10;
 p_lim = 30*(pi/180);
 
 m_states = 4;
@@ -50,10 +50,10 @@ end
 
 
 opt_traj = quadprog(G, c, con_A_ineq, con_B_ineq, con_A_eq, con_B_eq);
-lambdas = opt_traj(1:m_states:end-N*gain_states);
+lambda = opt_traj(1:m_states:end-N*gain_states);
 r = opt_traj(2:m_states:end-N*gain_states);
 p = opt_traj(3:m_states:end-N*gain_states);
 p_dot = opt_traj(4:m_states:end-N*gain_states);
 u = opt_traj(gopt:end);
 
-plot(p)
+plot(lambda);
