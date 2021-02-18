@@ -103,5 +103,6 @@ B_c = [0;
        0;
        K_1*K_pp];
    
-A = eye(4) + A_c.*h;
-B = B_c.*h;
+A_d = eye(4) + A_c.*h;
+B_d = B_c.*h;
+
