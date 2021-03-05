@@ -50,14 +50,21 @@ end
 
 
 opt_traj = quadprog(G, c, con_A_ineq, con_B_ineq, con_A_eq, con_B_eq);
+
 lambda = opt_traj(1:m_states:end-N*gain_states);
 r = opt_traj(2:m_states:end-N*gain_states);
 p = opt_traj(3:m_states:end-N*gain_states);
 p_dot = opt_traj(4:m_states:end-N*gain_states);
-u = opt_traj(gopt:end);
 
-u = [zeros(5/0.25,1);u;zeros(5/0.25,1)];
-u = [0.25*(0:length(u)-1)' u];
+x_star = [lambda r p p_dot];
+u_star = opt_traj(gopt:end);
+
+u_star = [zeros(5/0.25,1);u_star;zeros(5/0.25,1)];
+u_star = [0.25*(0:length(u_star)-1)' u_star];
+
+x_pad_start = [lambda_init*ones(5/0.25, 1) zeros(5/0.25, 3)];
+x_star = [x_pad_start;x_star;zeros(5/0.25,4)];
+x_star = [0.25*(0:length(x_star)-1)' x_star];
 
 p_dot = [zeros(5/0.25,1);p_dot;zeros(5/0.25,1)];
 p_dot = [0.25*(0:length(p_dot)-1)' p_dot];
@@ -68,5 +75,5 @@ p = [0.25*(0:length(p)-1)' p];
 clf;
 hold on;
 plot(p(:, 1), p(:, 2));
-plot(u(:, 1), u(:, 2));
+plot(u_star(:, 1), u_star(:, 2));
 

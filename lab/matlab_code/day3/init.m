@@ -108,3 +108,6 @@ D_c = zeros(4);
 A_d = eye(4) + A_c.*h;
 B_d = B_c.*h;
 
+K_d = dlqr(A_d, B_d, diag([1 0.1 0.1 0.1]), 0.01*eye(1));
+
+
