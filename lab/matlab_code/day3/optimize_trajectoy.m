@@ -12,12 +12,12 @@ x_init = zeros(opt_states, 1);
 lambda_init = pi;
 lamda_fin = 0;
 
-init_con_A = zeros(4, opt_states);
-init_con_A(1:m_states, 1:m_states) = eye(4);
+init_con_A = zeros(m_states, opt_states);
+init_con_A(:, 1:m_states) = eye(m_states);
 init_con_B = [lambda_init 0 0 0]';
 
-fin_con_A = zeros(4, opt_states);
-fin_con_A(:, gopt-m_states:gopt-1) = eye(4);
+fin_con_A = zeros(m_states, opt_states);
+fin_con_A(:, gopt-m_states:gopt-1) = eye(m_states);
 fin_con_B = [lamda_fin 0 0 0]';
 
 col_con_A = zeros(m_states*(N-1), opt_states);
