@@ -15,11 +15,13 @@ n_x = size(A_d, 2);
 n_u = size(B_d, 2);
 
 identity_N = eye(N);
+identity_N_min1 = eye(N-1);
 Qt = diag([4 4]);
-Q = kron(identity_N, Qt);
+Q = kron(identity_N_min1, Qt);
 Rt = 1;
 R = kron(identity_N, Rt);
-G = blkdiag(Q, R);
+[K, P, e] = dlqr(A_d, B_d, Qt / 2, Rt / 2, []);
+G = blkdiag(Q, 2*P, R);
 
 x_lowbound = -Inf(N * n_x, 1);
 x_upbound = Inf(N * n_x, 1);
