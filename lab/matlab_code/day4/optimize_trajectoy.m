@@ -5,7 +5,7 @@ p_lim = 30*(pi/180);
 
 m_states = size(A_d, 2);
 gain_states = size(B_d, 2);
-opt_states = (m_states + gain_states)*N;
+opt_states = m_states*N + gain_states * (N-1);
 gopt = m_states * (N) +1; %index of fisrt gain state
 x_init = zeros(opt_states, 1);
 
@@ -40,7 +40,7 @@ for i = 0:N-2
 
     c(1+m_states*(i+1)) = -2*lamda_fin;
 end
-G(gopt:gopt+gain_states*N-1, gopt:gopt+gain_states*N-1) = 2*q*eye(gain_states*N);
+G(gopt:gopt+gain_states*(N-1)-1, gopt:gopt+gain_states*(N-1)-1) = 2*q*eye(gain_states*(N-1));
 
 con_A_ineq = zeros(2*N, opt_states);
 con_B_ineq = p_lim*ones(2*N, 1);
@@ -58,12 +58,12 @@ nonlineq = @(x)conditions(x);
 opt = optimoptions("fmincon", "MaxFunctionEvaluations", 1e4, "Algorithm", "sqp");
 opt_traj = fmincon(objective_function, x_init, con_A_ineq, con_B_ineq, con_A_eq, con_B_eq, [], [],nonlineq, opt);
 
-lambda = opt_traj(1:m_states:end-N*gain_states);
-r = opt_traj(2:m_states:end-N*gain_states);
-p = opt_traj(3:m_states:end-N*gain_states);
-p_dot = opt_traj(4:m_states:end-N*gain_states);
-e = opt_traj(5:m_states:end-N*gain_states);
-e_dot = opt_traj(6:m_states:end-N*gain_states);
+lambda = opt_traj(1:m_states:gopt-1);
+r = opt_traj(2:m_states:gopt-1);
+p = opt_traj(3:m_states:gopt-1);
+p_dot = opt_traj(4:m_states:gopt-1);
+e = opt_traj(5:m_states:gopt-1);
+e_dot = opt_traj(6:m_states:gopt-1);
 
 u_p = opt_traj(gopt:2:end);
 u_e = opt_traj(gopt+1:2:end);
@@ -83,9 +83,9 @@ plot(time, e);
 subplot(426)
 plot(time, e_dot);
 subplot(427)
-plot(time, u_p);
+plot(time(1:end-1), u_p);
 subplot(428)
-plot(time, u_e);
+plot(time(1:end-1), u_e);
 
 
 x_star = [lambda r p p_dot e, e_dot];

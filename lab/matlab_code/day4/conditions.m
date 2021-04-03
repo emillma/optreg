@@ -4,7 +4,7 @@ function [c,ceq] = conditions(x)
 alpha = 0.2;
 beta = 20;
 lambda_t = 2*pi/3;
-states = x(1:(length(x)* 6)/8);
+states = x(1:((length(x)+2)* 6)/8);
 x_array = reshape(states,6, length(states)/6);
 c = zeros(size(x_array, 2),1);
 
