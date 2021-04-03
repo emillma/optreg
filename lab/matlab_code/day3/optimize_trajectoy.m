@@ -5,7 +5,7 @@ p_lim = 30*(pi/180);
 
 m_states = 4;
 gain_states = 1;
-opt_states = (m_states + gain_states)*N;
+opt_states = m_states*N + gain_states * (N-1);
 gopt = m_states * (N) +1; %index of fisrt gain state
 x_init = zeros(opt_states, 1);
 
@@ -37,7 +37,7 @@ for i = 0:N-2
     G(1+m_states*(i+1), 1+m_states*(i+1)) = 2;
     c(1+m_states*(i+1)) = -2*lamda_fin;
 end
-G(gopt:gopt+gain_states*N-1, gopt:gopt+gain_states*N-1) = 2*q*eye(gain_states*N);
+G(gopt:gopt+gain_states*(N-2), gopt:gopt+gain_states*(N-2)) = 2*q*eye(gain_states*(N-1));
 
 con_A_ineq = zeros(2*N, opt_states);
 con_B_ineq = p_lim*ones(2*N, 1);
@@ -51,10 +51,10 @@ end
 
 opt_traj = quadprog(G, c, con_A_ineq, con_B_ineq, con_A_eq, con_B_eq);
 
-lambda = opt_traj(1:m_states:end-N*gain_states);
-r = opt_traj(2:m_states:end-N*gain_states);
-p = opt_traj(3:m_states:end-N*gain_states);
-p_dot = opt_traj(4:m_states:end-N*gain_states);
+lambda = opt_traj(1:m_states:gopt-1);
+r = opt_traj(2:m_states:gopt-1);
+p = opt_traj(3:m_states:gopt-1);
+p_dot = opt_traj(4:m_states:gopt-1);
 
 x_star = [lambda r p p_dot];
 u_star = opt_traj(gopt:end);
